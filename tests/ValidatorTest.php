@@ -194,7 +194,8 @@ class ValidatorTest extends TestCase
     public function testvalidateVatNumberModulus()
     {
         $valid = [
-            'BE0407570442'
+            'BE0407570442',
+            'LU26375245'
         ];
 
         $validator = new Validator();
@@ -203,7 +204,8 @@ class ValidatorTest extends TestCase
         }
 
         $invalid = [
-            'BE1407570411'
+            'BE1407570411',
+            'LU26375242'
         ];
 
         foreach ($invalid as $format) {

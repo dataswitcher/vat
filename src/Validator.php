@@ -46,6 +46,7 @@ class Validator
 
     private $modulusCheckCallback = [
         'BE' => 'modulusBelgiumCheck',
+        'LU' => 'modulusLuxembourgCheck',
         'DE' => '',
         'NL' => '',
         'ES' => '',
@@ -184,6 +185,18 @@ class Validator
         $number = (int)substr($vat_number, 2, 8);
         $check = (int)substr($vat_number, 10, 2);
         $rest = 97 - ($number % 97);
+
+        return $rest === $check;
+    }
+
+    private function modulusLuxembourgCheck($vat_number)
+    {
+        if (substr($vat_number, 0, 2) !== 'LU') {
+            return false;
+        }
+        $number = (int)substr($vat_number, 2, 6);
+        $check = (int)substr($vat_number, 8, 2);
+        $rest = $number % 89;
 
         return $rest === $check;
     }
