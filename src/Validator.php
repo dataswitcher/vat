@@ -48,7 +48,7 @@ class Validator
         'BE' => 'localBEValidation',
         'LU' => 'localLUValidation',
         'DE' => 'localDEValidation',
-        'NL' => '',
+        'NL' => 'localNLValidation',
         'ES' => '',
         'FR' => 'localFRValidation',
         'GB' => '',
@@ -245,4 +245,29 @@ class Validator
 
         return false;
     }
+
+    private function localNLValidation($vat_number)
+    {
+        $number = substr($vat_number, 2, 9);
+
+        $total = 0;
+        $multipliers = [9,8,7,6,5,4,3,2];
+
+        foreach($multipliers as $i => $value) {
+            $total += (int)substr($number, $i, 1) * $multipliers[$i];
+        }
+
+        $total = $total % 11;
+
+        if ($total > 9) {
+            $total = 0;
+        }
+
+        if($total === (int)substr($vat_number, 10, 1)) {
+            return true;
+        }
+        return false;
+    }
+
+
 }

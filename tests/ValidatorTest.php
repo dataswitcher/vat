@@ -197,7 +197,8 @@ class ValidatorTest extends TestCase
             'BE0407570442',
             'LU26375245',
             'FR83404833048',
-            'DE815419677'
+            'DE815419677',
+            'NL861234133B01'
         ];
 
         $validator = new Validator();
@@ -209,7 +210,8 @@ class ValidatorTest extends TestCase
             'BE1407570411',
             'LU26375242',
             'FR83404833066',
-            'DE815419634'
+            'DE815419634',
+            'NL861234122B01'
         ];
 
         foreach ($invalid as $format) {
