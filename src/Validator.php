@@ -50,7 +50,7 @@ class Validator
         'DE' => '',
         'NL' => '',
         'ES' => '',
-        'FR' => '',
+        'FR' => 'modulusFranceCheck',
         'GB' => '',
         'XI' => '',
     ];
@@ -197,6 +197,24 @@ class Validator
         $number = (int)substr($vat_number, 2, 6);
         $check = (int)substr($vat_number, 8, 2);
         $rest = $number % 89;
+
+        return $rest === $check;
+    }
+
+    private function modulusFranceCheck($vat_number)
+    {
+        if (substr($vat_number, 0, 2) !== 'FR') {
+            return false;
+        }
+
+        // We cannot validate this without the first two check numbers
+        if(!preg_match('/^\d{2}$/', substr($vat_number, 2, 2))) {
+            return true;
+        }
+
+        $number = (int)substr($vat_number, 4, 11);
+        $check = (int)substr($vat_number, 2, 2);
+        $rest = (($number * 100) + 12) % 97;
 
         return $rest === $check;
     }
