@@ -249,6 +249,7 @@ class Validator
     private function localNLValidation($vat_number)
     {
         $number = substr($vat_number, 2, 9);
+        $check = (int)substr($vat_number, 10, 1);
 
         $total = 0;
         $multipliers = [9,8,7,6,5,4,3,2];
@@ -257,17 +258,12 @@ class Validator
             $total += (int)substr($number, $i, 1) * $multipliers[$i];
         }
 
-        $total = $total % 11;
+        $total = ($total % 11) > 9 ? 0 : $total % 11;
 
-        if ($total > 9) {
-            $total = 0;
-        }
-
-        if($total === (int)substr($vat_number, 10, 1)) {
+        if($total === $check) {
             return true;
         }
         return false;
     }
-
 
 }
