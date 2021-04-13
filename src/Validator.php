@@ -45,12 +45,12 @@ class Validator
     ];
 
     private $modulusCheckCallback = [
-        'BE' => 'modulusBelgiumCheck',
-        'LU' => 'modulusLuxembourgCheck',
-        'DE' => 'modulusGermanyCheck',
+        'BE' => 'localBEValidation',
+        'LU' => 'localLUValidation',
+        'DE' => 'localDEValidation',
         'NL' => '',
         'ES' => '',
-        'FR' => 'modulusFranceCheck',
+        'FR' => 'localFRValidation',
         'GB' => '',
         'XI' => '',
     ];
@@ -177,7 +177,7 @@ class Validator
      * @param $vat_number string the vat number
      * @return bool
      */
-    private function modulusBelgiumCheck($vat_number)
+    private function localBEValidation($vat_number)
     {
         if (substr($vat_number, 0, 3) !== 'BE0') {
             return false;
@@ -189,7 +189,7 @@ class Validator
         return $rest === $check;
     }
 
-    private function modulusLuxembourgCheck($vat_number)
+    private function localLUValidation($vat_number)
     {
         if (substr($vat_number, 0, 2) !== 'LU') {
             return false;
@@ -201,7 +201,7 @@ class Validator
         return $rest === $check;
     }
 
-    private function modulusFranceCheck($vat_number)
+    private function localFRValidation($vat_number)
     {
         if (substr($vat_number, 0, 2) !== 'FR') {
             return false;
@@ -219,7 +219,7 @@ class Validator
         return $rest === $check;
     }
 
-    private function modulusGermanyCheck($vat_number)
+    private function localDEValidation($vat_number)
     {
         $number = substr($vat_number, 2, 9);
         $product = 10;
