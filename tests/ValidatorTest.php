@@ -196,7 +196,8 @@ class ValidatorTest extends TestCase
         $valid = [
             'BE0407570442',
             'LU26375245',
-            'FR83404833048'
+            'FR83404833048',
+            'DE815419677'
         ];
 
         $validator = new Validator();
@@ -207,7 +208,8 @@ class ValidatorTest extends TestCase
         $invalid = [
             'BE1407570411',
             'LU26375242',
-            'FR83404833066'
+            'FR83404833066',
+            'DE815419634'
         ];
 
         foreach ($invalid as $format) {

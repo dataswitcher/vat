@@ -47,7 +47,7 @@ class Validator
     private $modulusCheckCallback = [
         'BE' => 'modulusBelgiumCheck',
         'LU' => 'modulusLuxembourgCheck',
-        'DE' => '',
+        'DE' => 'modulusGermanyCheck',
         'NL' => '',
         'ES' => '',
         'FR' => 'modulusFranceCheck',
@@ -217,5 +217,32 @@ class Validator
         $rest = (($number * 100) + 12) % 97;
 
         return $rest === $check;
+    }
+
+    private function modulusGermanyCheck($vat_number)
+    {
+        $number = substr($vat_number, 2, 9);
+        $product = 10;
+        $check = 0;
+
+        foreach(range(0, strlen($number)-2) as $i) {
+            $digit = (int)substr($number, $i, 1);
+            $sum = (int)($digit + $product) % 10;
+            if ($sum == 0) {
+                $sum = 10;
+            }
+
+            $product = (2 * $sum) % 11;
+        }
+
+        if(11 - $product != 10) {
+            $check = 11 - $product;
+        }
+
+        if($check === (int)substr($number, 8, 2)) {
+            return true;
+        }
+
+        return false;
     }
 }
