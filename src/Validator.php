@@ -51,7 +51,7 @@ class Validator
         'NL' => 'localNLValidation',
         'ES' => '',
         'FR' => 'localFRValidation',
-        'GB' => '',
+        'GB' => 'localGBValidation',
         'XI' => '',
     ];
 
@@ -261,6 +261,46 @@ class Validator
         $total = ($total % 11) > 9 ? 0 : $total % 11;
 
         if($total === $check) {
+            return true;
+        }
+        return false;
+    }
+
+    private function localGBValidation($vat_number)
+    {
+        $number = substr($vat_number, 2, 9);
+        $check = (int)substr($number, 7, 2);
+
+        $total = 0;
+        $multipliers = [8,7,6,5,4,3,2];
+
+        foreach($multipliers as $i => $value) {
+            $total += (int)substr($number, $i, 1) * $multipliers[$i];
+        }
+
+        $cd = $total;
+        while($cd > 0) {
+            $cd = $cd - 97;
+        }
+        $cd = abs($cd);
+        $numberWoCheck = (int)substr($number, 0, 7);
+
+        if ($cd === $check &&
+            $numberWoCheck < 9990001
+            && ($numberWoCheck < 100000 || $numberWoCheck > 999999)
+            && ($numberWoCheck < 9490001 || $numberWoCheck > 9700000)
+        ) {
+            return true;
+        }
+
+        // TODO: Add specific vat number in test for this situation
+        if($cd >= 55) {
+            $cd = $cd - 55;
+        } else {
+            $cd = $cd + 42;
+        }
+
+        if ($cd === $check && $numberWoCheck > 1000000) {
             return true;
         }
         return false;
