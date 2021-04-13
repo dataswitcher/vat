@@ -44,6 +44,16 @@ class Validator
         'XI' => '(\d{9}|\d{12}|(GD|HA)\d{3})'
     ];
 
+    private $modulusCheckCallback = [
+        'BE' => 'modulusBelgiumCheck',
+        'DE' => '',
+        'NL' => '',
+        'ES' => '',
+        'FR' => '',
+        'GB' => '',
+        'XI' => '',
+    ];
+
     /**
      * @var Vies\Client
      */
@@ -135,8 +145,46 @@ class Validator
      *
      * @throws Vies\ViesException
      */
-    public function validateVatNumber(string $vatNumber) : bool
+    public function validateVatNumber(string $vatNumber, bool $local = false) : bool
     {
+        if ($local) {
+            return $this->validateVatNumberFormat($vatNumber) && $this->validateVatNumberModulus($vatNumber);
+        }
         return $this->validateVatNumberFormat($vatNumber) && $this->validateVatNumberExistence($vatNumber);
+    }
+
+    private function validateVatNumberModulus(string $vatNumber)
+    {
+        $vatNumber = strtoupper($vatNumber);
+        $country = substr($vatNumber, 0, 2);
+
+        if (isset($this->modulusCheckCallback[$country])) {
+            return call_user_func(array($this, $this->modulusCheckCallback[$country]), $vatNumber);
+        }
+
+        // returning true because we don't want it to fail if there is no modulus check available
+        return true;
+    }
+
+    /**
+     * Validates a belgium VAT number
+     * Account Invalid VAT number.\nThe number should be entered in the format: BE0999999999 - 1 block of 10 digits.
+     * (The first digit following the prefix is always zero ('0').
+     * The (new) 10-digit format is the result of adding a leading zero to the (old) 9-digit format.)
+     * (Example: BE0000000097)
+     * @url https://help.afas.nl/help/NL/SE/Fin_Config_VatIct_NrChck.htm
+     * @param $vat_number string the vat number
+     * @return bool
+     */
+    private function modulusBelgiumCheck($vat_number)
+    {
+        if (substr($vat_number, 0, 3) !== 'BE0') {
+            return false;
+        }
+        $number = (int)substr($vat_number, 2, 8);
+        $check = (int)substr($vat_number, 10, 2);
+        $rest = 97 - ($number % 97);
+
+        return $rest === $check;
     }
 }

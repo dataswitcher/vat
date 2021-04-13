@@ -187,4 +187,28 @@ class ValidatorTest extends TestCase
             ['nl'],
         ];
     }
+
+    /**
+     * @covers Validator::validateVatNumberModulus
+     */
+    public function testvalidateVatNumberModulus()
+    {
+        $valid = [
+            'BE0407570442'
+        ];
+
+        $validator = new Validator();
+        foreach ($valid as $format) {
+            $this->assertTrue($validator->validateVatNumber($format, true), "{$format} did not pass validation.");
+        }
+
+        $invalid = [
+            'BE1407570411'
+        ];
+
+        foreach ($invalid as $format) {
+            $isValid = $validator->validateVatNumber($format, true);
+            $this->assertFalse($isValid, "{$format} passed validation, but shouldn't.");
+        }
+    }
 }
